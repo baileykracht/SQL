@@ -70,5 +70,25 @@ FROM fortune_companies
 WHERE industry='Manufacturing' 
 OR industry='Retail';
 
-2. 
+2. Which companies offer healthcare benefits, at least 21 paid time off days, and at least 15 maternity leave weeks?
+SELECT company_name
+FROM fortune_companies
+WHERE healthcare_benefits=1
+AND paid_time_off_days>=21
+AND maternity_leave_weeks>=15;
 
+3. Locate the industries that have an average of at least 15,000 employees and find each industry's average number of employees.
+SELECT industry, ROUND(AVG(employees), 1) AS average_employees
+FROM fortune_companies
+GROUP BY industry
+HAVING average_employees>=15000;
+
+4. Which company generates the most revenue within the Telecommunications industry?
+SELECT company_name, MAX(revenue)
+FROM fortune_companies
+WHERE industry='Telecommunications';
+
+5. Which company generates the least revenue within the Energy industry?
+SELECT company_name, MIN(revenue)
+FROM fortune_companies
+WHERE industry='Energy';
