@@ -1,0 +1,62 @@
+For this project, I downloaded Spotify data from Kaggle and then created a table to insert Spotify data into. Then, I performed analytics on the data using SQL. 
+
+Creating the table: 
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL 
+)
+
+Following table creation I inserted the Spotify Data .csv into the table and explored the data using the following SQL:
+
+1. Show how many tracks are within a certain acousticness range (0.5 or more, 0.25, 0.1%, or under 0.1).
+SELECT COUNT (*),
+CASE WHEN acousticness>=0.5 THEN "0.5+"
+WHEN acousticness>=0.25 THEN "0.25+"
+WHEN acousticness>=0.1 THEN "0.1+"
+ELSE "UNDER 0.1"
+END AS "AcousticnessRange"
+FROM BIT_DB.Spotifydata
+GROUP BY AcousticnessRange;
+
+2. Which artist released the longest song?
+SELECT DISTINCT artist_name, duration_ms
+FROM BIT_DB.Spotifydata
+ORDER BY duration_ms DESC
+LIMIT 1;
+
+3. Determine the average liveness, valence and tempo by artist and track.
+SELECT artist_name, track_name, AVG(liveness), AVG(valence), AVG(tempo)
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name, track_name;
+
+4. Determine the top 5 artists by popularity.
+SELECT track_name, artist_name, popularity
+FROM BIT_DB.Spotifydata
+ORDER BY popularity DESC
+LIMIT 5;
+
+5. How many artist names appear on more than one track within this data set?
+SELECT COUNT (artist_name) - COUNT (DISTINCT artist_name) AS RepeatingArtists
+FROM BIT_DB.Spotifydata;
+
+6. Select all the track names that have an average of at least 0.745 valence.
+SELECT track_name, AVG(valence) AS AverageValence
+FROM BIT_DB.Spotifydata
+GROUP BY valence
+HAVING AverageValence>=0.745;
